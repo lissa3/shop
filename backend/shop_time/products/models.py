@@ -1,8 +1,10 @@
 from django.db import models
-from autoslug import AutoSlugField
-from django.utils import timezone
 from django.core.validators import FileExtensionValidator
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
+
+from autoslug import AutoSlugField
 
 from categories.models import Category
 from myutils.helpers import upload_prod
