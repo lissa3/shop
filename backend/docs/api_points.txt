@@ -1,2 +1,18 @@
 Categories
     locahost:8000/api/v1/categories (Tree structure categories)
+    localhost:8000/api/v1/categories/?slug 
+
+
+Users + auth (djoser)
+
+1.sign-up:
+POST localhost:8000/auth/users/ (username,email,password,re_password)
+
+2.activate account
+POST localhost:8000/auth/users/activattion/ (uid,token)
+
+3.login
+POST localhost:8000/auth/jwt/create/ (email,password)
+
+4.Get info about user
+GET localhost:8000/auth/users/me/ (in headers: 'JWT ey...gghghgh')
