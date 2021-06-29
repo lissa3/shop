@@ -55,7 +55,7 @@ class ProductSerializerTest(TestCase):
     def test_product_list(self):
         """ """
         url = reverse('products:products-list')
-        response = self.client.get(url)
+        response = self.client.get(url,data={'ordering': '-price'})
         local_ser_data = ProductSerializer(self.prods,many=True).data        
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(local_ser_data,response.data)    

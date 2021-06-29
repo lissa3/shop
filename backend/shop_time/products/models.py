@@ -37,9 +37,10 @@ class Product(models.Model):
 
     def __str__(self) -> str:
         return self.name
+    class Meta:
+        ordering = ('-price',)    
 
-    def get_absolute_url(self):
-        return reverse("products:products-detail", kwargs={"slug": self.slug})
+    
         
 
 class UserProductRelation(models.Model):
@@ -59,3 +60,5 @@ class UserProductRelation(models.Model):
     def __str__(self):
         """ here user = email"""
         return f'User: {self.user} reacted at prod {self.prod.id}'
+
+    
