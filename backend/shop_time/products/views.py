@@ -1,5 +1,4 @@
 from django.db.models import When, Case, Count, Avg
-from django.db.models.lookups import Lookup
 from rest_framework.response import Response
 from rest_framework import status
 # from rest_framework.views import APIView
@@ -9,8 +8,8 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.permissions import AllowAny
 from django_filters.rest_framework import DjangoFilterBackend   # installed app dj_filters
 from django_filters import rest_framework as dj_filters         # installed app dj_filters
-from django_filters import filters as custom_filters            # installed app dj_filters
-from rest_framework import filters                              # for SearchFilter (built-in)
+from django_filters import filters as custom_filters           # installed app dj_filters
+from rest_framework.filters import SearchFilter, OrderingFilter                             
 
 from .models import Product
 from serializers.prods.prod_ser import ProductSerializer
@@ -28,13 +27,13 @@ class ProductRetrListViewSet(ListModelMixin,RetrieveModelMixin, GenericViewSet):
     permission_classes = (AllowAny,)
     serializer_class = ProductSerializer
     lookup_field = 'slug'
-    filter_backends = (filters.SearchFilter,DjangoFilterBackend,)
+    filter_backends = (SearchFilter,OrderingFilter,DjangoFilterBackend,)
     # filterset_fields = ['price', 'in_stock','name','categ'] # replaced by custom filterset_class
     filterset_class = ProductFilterCustom
 
-    search_fields = ['name','price','categ__name'] # default ?search=cat (charField,textField)
+    search_fields = ['name','price','categ__name','description'] # default ?search=cat (charField,textField)
 
-    ordering_fields = ['price','name','in_stock']
+    ordering_fields = ['price','name']
 
     
     def get_queryset(self):
