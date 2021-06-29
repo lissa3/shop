@@ -8,6 +8,9 @@ router = routers.SimpleRouter()
 router.register(r'product', ProductRetrListViewSet,basename="products")
 
 urlpatterns = router.urls
+# urlpatterns:
+# [<URLPattern '^product/$' [name='products-list']>, 
+# <URLPattern '^product/(?P<slug>[^/.]+)/$' [name='products-detail']>]
 
 urlpatterns = [
     path('products/',include(router.urls)),
