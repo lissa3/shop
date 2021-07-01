@@ -1,6 +1,6 @@
 Categories
     locahost:8000/api/v1/categories (Tree structure categories)
-    localhost:8000/api/v1/categories/?slug 
+    localhost:8000/api/v1/categories/?slug (Prods of a given categ + evt prods of it's children)
 
 
 Users + auth (djoser)
