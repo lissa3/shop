@@ -7,19 +7,24 @@ from rest_framework.viewsets import GenericViewSet
 
 from rest_framework.permissions import AllowAny
 from django_filters.rest_framework import DjangoFilterBackend   # installed app dj_filters
+       
 from django_filters import rest_framework as dj_filters         # installed app dj_filters
-from django_filters import filters as custom_filters           # installed app dj_filters
+
 from rest_framework.filters import SearchFilter, OrderingFilter                             
 
 from .models import Product
 from serializers.prods.prod_ser import ProductSerializer
 
-class ProductFilterCustom (dj_filters.FilterSet):
-    name = custom_filters.CharFilter(lookup_expr='icontains')
-    description = custom_filters.CharFilter(lookup_expr='icontains')
+class ProductFilter(dj_filters.FilterSet):
+    name = dj_filters.CharFilter(lookup_expr='icontains')
+    price = dj_filters.NumberFilter()
+    min_price = dj_filters.NumberFilter(field_name='price', lookup_expr='gte')
+    max_price = dj_filters.NumberFilter(field_name='price', lookup_expr='lte')
+    # manufacturer__name = django_filters.CharFilter(lookup_expr='icontains')
+    
     class Meta:
         model = Product
-        fields = ('price', 'in_stock','name','categ','description')
+        fields = ('price', 'min_price','max_price','in_stock','name','categ')
     
 
 class ProductRetrListViewSet(ListModelMixin,RetrieveModelMixin, GenericViewSet):
@@ -28,11 +33,10 @@ class ProductRetrListViewSet(ListModelMixin,RetrieveModelMixin, GenericViewSet):
     serializer_class = ProductSerializer
     lookup_field = 'slug'
     filter_backends = (SearchFilter,OrderingFilter,DjangoFilterBackend,)
-    # filterset_fields = ['price', 'in_stock','name','categ'] # replaced by custom filterset_class
-    filterset_class = ProductFilterCustom
-
+    # djano_filter
+    filterset_class = ProductFilter
+    # built-in 
     search_fields = ['name','price','categ__name','description'] # default ?search=cat (charField,textField)
-
     ordering_fields = ['price','name']
 
     
