@@ -37,7 +37,7 @@ const actions = {
         commit(mutationTypes.SET_CATEGS_LOADING); 
         try{
         const resp = await fetchAPI.getCategTree()        
-          console.log("response is",resp) 
+          // console.log("response is",resp) 
           commit(mutationTypes.GET_CATEGS_SUCCESS,resp.data);          
           return resp
         }catch(err){

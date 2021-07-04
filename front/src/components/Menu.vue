@@ -34,9 +34,10 @@
       
       <b-navbar-nav class="ml-auto">
         <b-nav-form>
-          <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
-          <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
-        </b-nav-form>    
+          <b-form-input v-model="term" size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
+          <b-button @click="doSearch" size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
+        </b-nav-form>  
+           
         <template v-if="isLoggedIn">
               <b-nav-item href="#">Link</b-nav-item>
               <b-nav-item href="#">IsLoggedIn</b-nav-item>              
@@ -73,9 +74,13 @@ import {actionTypes} from '@/store/modules/auth'
 import {getterTypes} from '@/store/modules/auth'
 import {mapGetters} from 'vuex'
 
-
 export default {
     name:'AppMenu',
+    data(){
+      return {
+        term:''
+      }
+    },
     computed:{
       ...mapGetters({
         currentUser:getterTypes.currentUser,
@@ -89,14 +94,18 @@ export default {
     },
     methods:{
       doSignOut(){
-        console.log("Sign out...")
+        // console.log("Sign out...")
         this.$store.dispatch( actionTypes.signOut)
         location.reload();
+      },
+      doSearch(){        
+        this.$router.push({name:'search',params:{term:this.term}})       
+        this.term = ''
       }
     },
     mounted(){
       this.$store.dispatch(actionTypes.getUser)
-      console.log("menu mounted, call for getUser from store")
+      // console.log("menu mounted, call for getUser from store")
     }
 }
 </script>

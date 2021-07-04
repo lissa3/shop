@@ -1,6 +1,8 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "@/views/Home";
+import ProdSearch from "@/views/ProdSearch";
+import CategProds from "@/views/CategProds";
 import SignUp from "@/views/auth/SignUp";
 import ConfirmEmail from '@/views/auth/ConfirmEmail'
 import Login from '@/views/auth/Login'
@@ -15,6 +17,18 @@ const routes = [
     path: "/",
     name: "home",
     component: Home,
+  },
+  {
+    // to render all ideas for search
+    path: '/product-search/:term',
+    name: 'search',
+    component: ProdSearch
+  },
+  {
+    // to render all ideas for a given category
+    path: '/category-idea/:slug',
+    name: 'categ',
+    component: CategProds 
   },
   {
     path: "/signup",
@@ -46,13 +60,7 @@ const routes = [
     name: "activate",
     component: Activate,
     props:true
-  },
-  {
-    // to render all ideas for a given category
-    path: '/category-idea/:slug',
-    name: 'categ',
-    component: Home //!!!!!!!!! placeholder|=> TODO: real component to CategProducts
-  },
+  },  
   {
     path: "/about",
     name: "About",
