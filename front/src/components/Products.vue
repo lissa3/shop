@@ -1,12 +1,11 @@
 <template>
-    <div class="container">
-        
-        <!-- <div v-if="isLoading"><app-loader></app-loader></b-spinner></div> -->
-        <div  v-if="products" class="wrapper">            
-            <div class="row main-row" >
+    <div class="container">        
+        <div v-if="isLoading"><app-loader></app-loader></div>
+        <div  v-if="prods" class="wrapper">    
+            <div class="row main-row" v-for="prod in prods" :key="prod.id">
                 <div   class="col-lg-4 col-md-12 col-sm-12">
                     <div class="prod-img mb-2">
-                        <img src="../assets/logo.png" alt="img" class="img-fluid">
+                        <img src="@/assets/logo.png" alt="img" class="img-fluid">
                     </div>
                     <div class="row">
                         <div class="col-sm-12 mb-2">
@@ -29,37 +28,38 @@
                 </div>
                 <div class="col-lg-8 col-md-12 col-sm-12">
                 <div class="prod-title mb-1 mt-1">
-                        <h3>product title</h3>
+                        <h3>{{prod.name}}</h3>
                 </div> 
                 <div class="idea-title mb-2">
-                    <p>by <strong>product</strong></p>    
+                    <p>price <strong>$ {{prod.price}}</strong></p>    
                 </div> 
                 <div class="idea-title mb-2">
-                        <p>Rating</p>
+                        <p>Rating: {{prod.avg_rate}}</p>
+                        
                 </div> 
                 <div class="mb-2">
                     <div class="row">
                         <div class="col-lg-9 col-md-9 col-sm-9">
                            <div class="idea-date mb-2">
-                            <span>.....</span>
+                            <span>sold: {{prod.sold}}</span>
                             </div>
                         </div>
                         <div class="col-lg-1 col-md-1 col-sm-1">
                                 <b-icon icon="heart-fill"></b-icon>
                         </div>
                         <div class="col-lg-1 col-md-1 col-sm-1">
-                                product likes
+                                <p>Likes: {{prod.an_likes}}</p>
                         </div>
                     </div>
                 </div>                
                 <div class="prod-main-text mb-2">
-                    <p>prod</p>
+                    <p>{{prod.description}}</p>
                 </div>
                 <div class="prod-read-more mb-2">
                     <button class="btn btn-outline-dark">Read More</button>
                 </div>
                 <div class="prod-read-more mb-2">
-                    <div >List of tags</div>
+                    <div >...</div>
                     
                 </div>
               </div>
@@ -68,98 +68,101 @@
         <div v-else>No products yet</div>
         <!-- <div v-if="error">smth went wrong</div> -->
         <div class="col-lg-8 col-md-12 col-sm-12 pagination">
-            <!-- <app-pagination  
+            <app-pagination  
             :currentPage="currentPage" 
             :total="total"
             :limit="limit"
             :url="baseUrl"
             :next="next"
-            :prev="prev">
-            </app-pagination>            -->
+            :prev="prev"
+            :last="last">
+            </app-pagination>           
         </div>
     </div>
 </template>
 <script>
 
-// import {parseUrl} from 'query-string'
-// import {stringify, parseUrl} from 'query-string'
-// import {actionTypes} from '@/store/modules/ideas'
-// import {limit} from '@/helpers/vars'
-// import {mapState} from 'vuex'
-// import  AppPagination from '@/components/Pagination'
-// import AppLoader from '@/components/Loader'
+import {stringify, parseUrl} from 'query-string'
+import {actionTypes} from '@/store/modules/prods'
+import {limit} from '@/helpers/vars'
+import {mapState} from 'vuex'
+import  AppPagination from '@/components/Pagination'
+import AppLoader from '@/components/Loader'
 export default {
     name:'AppProduct',
     components:{
-        //  AppPagination,
-        //  AppLoader
+         AppPagination,
+         AppLoader
     },
     props:{
         apiUrl:{
             type:String,
             required:true
         }
-    },
-    data(){
-        return {
-           products:true 
-        }
+    },    
+    created(){
+        this.fetchProducts()
+
     },
     computed:{            
-        // ...mapState({
-        //     ideas:state=>state.ideas.ideas,
-        //     total:state=>state.ideas.count,
-        //     isLoading:state=>state.ideas.isLoading,
-        //     error:state=>state.ideas.error,
-        //     prev:state=>state.ideas.prev,
-        //     next:state=>state.ideas.next           
-        // }),
+        ...mapState({
+             prods:state=>state.prods.data,
+             total:state=>state.prods.count,
+             isLoading:state=>state.prods.isLoading,
+             error:state=>state.prods.error,
+             prev:state=>state.prods.prev,
+             next:state=>state.prods.next           
+        }),
         baseUrl() {
-         console.log("route.path is",this.$route.path)
-         return this.$route.path
+            // vue route: const = /
+            return this.$route.path
         },
-        // currentPage() {
-        //     console.log("rout query page",this.$route.query.page)
-        //     return Number(this.$route.query.page || '1')
-        // },
-        // limit(){
-        //     return limit
-        // },
-        // offset() {
-        //  return this.currentPage * limit - limit
-        // },
+        currentPage() {
+            //console.log("rout query page",this.$route.query.page)
+            return Number(this.$route.query.page || '1')
+        },
+        limit(){
+            return limit
+        },
+        offset() {
+            // 1st page = 1*2 -2 = zero
+         return this.currentPage * limit - limit
+        },
+        last(){
+            return Math.ceil(this.total/this.limit)
+        }
     },    
-    // watch: {
-    //     currentPage() {
-    //         console.log("watcher here; see changes")
-    //         this.fetchIdeas()
-    //     },
-    //      baseUrl(){
-    //         console.log("watcher base url; see changes")
-    //         this.fetchIdeas()
-    //     }
-    // },     
-    // created(){
-    //     this.fetchIdeas()       
-    // },
+    watch: {
+        currentPage() {           
+            // if query.page changes => make request with a new page again
+            this.fetchProducts()
+        },
+        // вопрос: насколько здесь нужен  watch (baseUrl),т.к. watch currentPage
+        // уже ослеживает vue.js url = this.$route.query.page c ?page=....
+        // отв: to fix moment when you go to left side bar to click on categories
+         baseUrl(){
+            //no reaction on changing url; logic = const / (Home)
+            this.fetchProducts()
+        }
+    },    
     methods:{
-        // fetchIdeas(){
-        //     const parsedUrl = parseUrl(this.apiUrl)
-        //     console.log("parsedUrl",parsedUrl)
-        //     console.log("parsedUrl.url:   ",parsedUrl.url)
-        //     console.log("parsedUrl.query:  ",parsedUrl.query)
+        fetchProducts(){
+            const parsedUrl = parseUrl(this.apiUrl)
+            // console.log("parsedUrl",parsedUrl)
+            // console.log("parsedUrl.url:   ",parsedUrl.url)
+            // console.log("parsedUrl.query:  ",parsedUrl.query)
 
-        //     const stringifiedParams = stringify({
-        //         limit,
-        //         offset: this.offset,
-        //         ...parsedUrl.query
-        //     })
-        //     const apiUrlWithParams = `${parsedUrl.url}?${stringifiedParams}`
-        //     // const apiUrlWithParams = `${parsedUrl.url}`            
-        //     this.$store.dispatch(actionTypes.getIdeas, {apiUrl: apiUrlWithParams})       
-        //     },
+            const stringifiedParams = stringify({
+                limit,
+                offset: this.offset,
+                ...parsedUrl.query
+            })
+            const apiUrlWithParams = `${parsedUrl.url}?${stringifiedParams}`
+            // const apiUrlWithParams = `${parsedUrl.url}` 
+            // console.log("url izzz:",apiUrlWithParams)           
+             this.$store.dispatch(actionTypes.getProds, {apiUrl: apiUrlWithParams})       
+             },           
     },    
-    
     
 }
 </script>
