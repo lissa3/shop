@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "@/views/Home";
 import ProdSearch from "@/views/ProdSearch";
+import ProdFilter from "@/views/ProdFilter";
 import CategProds from "@/views/CategProds";
 import SignUp from "@/views/auth/SignUp";
 import ConfirmEmail from '@/views/auth/ConfirmEmail'
@@ -23,6 +24,12 @@ const routes = [
     path: '/product-search/:term',
     name: 'search',
     component: ProdSearch
+  },
+  {
+    // to render all ideas for search
+    path: '/product-filter/:sort',
+    name: 'filter',
+    component: ProdFilter
   },
   {
     // to render all ideas for a given category
