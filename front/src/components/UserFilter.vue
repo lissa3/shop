@@ -16,7 +16,7 @@
                     High price on top 
                 </label>
             </div>             
-            <!-- <div class="form-check">
+            <div class="form-check">
                 <input class="form-check-input" type="radio" v-model="userChoice" value="aOnTop" 
                 id="aTop" active-class="active">
                 <label class="form-check-label" for="aTop">
@@ -31,7 +31,7 @@
                 </label>
             </div>
             <p>Filter</p>
-                <div class="input-group mb-3">
+                <!-- <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <div class="input-group-text">
                         <input v-model="onFront" value="True" type="checkbox" aria-label="Featured">
@@ -62,14 +62,14 @@ export default {
             if(this.userChoice==='lowOnTop'){
                 return "price"
             }else if(this.userChoice ==='highOnTop') {
-                return "-price"
-            } else{
-                return 'zoo'
-            }       
-            // else if(this.userChoice==='aOnTop'){
-            //     return "title"
+                return '-price'
+            }    
+            else if(this.userChoice==='aOnTop'){
+                return 'name'
             
-            //}
+            }else{
+                return '-name'
+            }
         },
         
     },
